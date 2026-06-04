@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Sunny Sprout Sprint</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <main class="game-shell" aria-label="Sunny Sprout Sprint platformer game">
+    <canvas id="gameCanvas" width="1280" height="720" aria-label="Game canvas"></canvas>
+
+    <section class="hud" aria-label="Game status">
+      <div class="hud-group">
+        <span>Score <strong id="scoreValue">0</strong></span>
+        <span>Coins <strong id="coinValue">0</strong></span>
+      </div>
+      <div class="hud-group">
+        <span>Level <strong id="levelValue">1</strong></span>
+        <span>Lives <strong id="livesValue">3</strong></span>
+      </div>
+    </section>
+
+    <section id="messagePanel" class="message-panel" aria-live="polite">
+      <div class="message-card">
+        <h1 id="messageTitle">Sunny Sprout Sprint</h1>
+        <p id="messageText">Collect coins, tag checkpoints, and reach the flag.</p>
+        <button id="primaryAction" type="button">Start Game</button>
+      </div>
+    </section>
+
+    <section id="touchControls" class="touch-controls" aria-label="Touch controls">
+      <div class="touch-row">
+        <button class="touch-button" type="button" data-control="left" aria-label="Move left">‹</button>
+        <button class="touch-button" type="button" data-control="right" aria-label="Move right">›</button>
+      </div>
+      <button class="touch-button jump-button" type="button" data-control="jump" aria-label="Jump">↑</button>
+    </section>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/levels.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/entities.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
