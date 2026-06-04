@@ -50,15 +50,24 @@ button {
   left: max(12px, env(safe-area-inset-left));
   right: max(12px, env(safe-area-inset-right));
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
   gap: 12px;
   pointer-events: none;
 }
 
 .hud-group {
   display: flex;
+  flex: 0 0 auto;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.hud-group:last-child {
+  margin-left: auto;
+  justify-content: flex-end;
+  column-gap: 10px;
 }
 
 .hud span {
@@ -94,6 +103,10 @@ button {
   color: #f2dfab;
   cursor: pointer;
   pointer-events: auto;
+}
+
+.pause-toggle {
+  margin-right: 24px;
 }
 
 .hud-button:disabled {
@@ -259,10 +272,6 @@ button {
 @media (max-width: 540px) {
   .hud {
     gap: 8px;
-  }
-
-  .hud-group {
-    max-width: 50%;
   }
 
   .hud span {
