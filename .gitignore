@@ -1,0 +1,13 @@
+.idea/
+
+node_modules/
+dist/
+build/
+.env
+.env.*
+
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
