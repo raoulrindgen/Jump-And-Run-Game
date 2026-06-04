@@ -10,7 +10,7 @@
   <main class="game-shell" aria-label="Sunny Sprout Sprint platformer game">
     <canvas id="gameCanvas" width="1280" height="720" aria-label="Game canvas"></canvas>
 
-    <section class="hud" aria-label="Game status">
+    <div class="hud" aria-label="Game status">
       <div class="hud-group">
         <span>Score <strong id="scoreValue">0</strong></span>
         <span>Coins <strong id="coinValue">0</strong></span>
@@ -19,7 +19,7 @@
         <span>Level <strong id="levelValue">1</strong></span>
         <span>Lives <strong id="livesValue">3</strong></span>
       </div>
-    </section>
+    </div>
 
     <section id="messagePanel" class="message-panel" aria-live="polite">
       <div class="message-card">
@@ -29,13 +29,13 @@
       </div>
     </section>
 
-    <section id="touchControls" class="touch-controls" aria-label="Touch controls">
+    <div id="touchControls" class="touch-controls" aria-label="Touch controls">
       <div class="touch-row">
         <button class="touch-button" type="button" data-control="left" aria-label="Move left">‹</button>
         <button class="touch-button" type="button" data-control="right" aria-label="Move right">›</button>
       </div>
       <button class="touch-button jump-button" type="button" data-control="jump" aria-label="Jump">↑</button>
-    </section>
+    </div>
   </main>
 
   <script src="js/config.js"></script>
