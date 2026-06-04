@@ -5,7 +5,7 @@
 
   SunnyGame.Levels = [
     {
-      name: "Meadow Morning",
+      name: "Eversong Siege",
       width: 3300,
       height: 900,
       playerStart: { x: 90, y: 720 },
@@ -46,7 +46,7 @@
       ]
     },
     {
-      name: "Breezy Bridge",
+      name: "Zul'Aman Canopy",
       width: 4100,
       height: 980,
       playerStart: { x: 80, y: 750 },
@@ -94,7 +94,7 @@
       ]
     },
     {
-      name: "Rainbow Ridge",
+      name: "Voidstorm Spire",
       width: 4900,
       height: 1040,
       playerStart: { x: 80, y: 760 },

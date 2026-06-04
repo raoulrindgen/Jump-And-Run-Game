@@ -1,6 +1,6 @@
-# Sunny Sprout Sprint
+# Midnight Rift Run
 
-A local, browser-based 2D platformer built with HTML, CSS, JavaScript, and HTML5 Canvas.
+A local, browser-based 2D platformer built with HTML, CSS, JavaScript, and HTML5 Canvas. The game uses original dark fantasy canvas art with a Light-versus-Void theme.
 
 ## Run
 
@@ -10,6 +10,7 @@ Open `frontend/index.html` in a browser. No backend, package install, or build s
 
 - Move: `A` / `D` or left / right arrow keys
 - Jump: `Space`
+- Pause: `P`, `Escape`, or the pause button
 - Mobile: on-screen buttons
 
 ## Project Structure

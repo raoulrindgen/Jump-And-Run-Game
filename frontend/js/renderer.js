@@ -54,7 +54,7 @@
     }
 
     for (var e = 0; e < game.enemies.length; e += 1) {
-      this.drawEnemy(game.enemies[e], game.time);
+      this.drawEnemy(game.enemies[e]);
     }
 
     this.drawParticles(game.particles);
@@ -71,10 +71,27 @@
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, this.width, this.height);
 
-    ctx.fillStyle = "#ffd166";
+    for (var star = 0; star < 56; star += 1) {
+      var starX = (star * 173 - cameraX * 0.08) % (this.width + 120) - 60;
+      var starY = 32 + ((star * 89) % Math.max(120, this.height * 0.62));
+      var starPulse = 0.45 + Math.sin(time * 2 + star) * 0.24;
+      ctx.globalAlpha = 0.3 + starPulse * 0.42;
+      ctx.fillStyle = star % 5 === 0 ? "#f7c45b" : "#d8e5ff";
+      ctx.fillRect(starX, starY, star % 4 === 0 ? 3 : 2, star % 4 === 0 ? 3 : 2);
+    }
+    ctx.globalAlpha = 1;
+
+    this.drawVoidRift(this.width - 120, 104, 56 + Math.sin(time * 1.4) * 3, time);
+
+    ctx.fillStyle = "rgba(247, 196, 91, 0.9)";
     ctx.beginPath();
-    ctx.arc(this.width - 96, 94, 48, 0, Math.PI * 2);
+    ctx.arc(92, 104, 36, 0, Math.PI * 2);
     ctx.fill();
+    ctx.strokeStyle = "rgba(104, 246, 208, 0.42)";
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.arc(92, 104, 50 + Math.sin(time * 2) * 3, 0, Math.PI * 2);
+    ctx.stroke();
 
     level.clouds.forEach(function (cloud) {
       this.drawCloud(
@@ -84,8 +101,36 @@
       );
     }, this);
 
-    this.drawHillLayer(cameraX * 0.18, this.height - 140, "#93dd79", 0.6);
-    this.drawHillLayer(cameraX * 0.32, this.height - 82, "#67c783", 0.9);
+    this.drawHillLayer(cameraX * 0.18, this.height - 142, "#142c2e", 0.65);
+    this.drawHillLayer(cameraX * 0.32, this.height - 82, "#302042", 0.95);
+  };
+
+  Renderer.prototype.drawVoidRift = function (x, y, radius, time) {
+    var ctx = this.ctx;
+
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(time * 0.35);
+
+    var gradient = ctx.createRadialGradient(0, 0, 4, 0, 0, radius);
+    gradient.addColorStop(0, "rgba(255, 255, 255, 0.86)");
+    gradient.addColorStop(0.24, "rgba(104, 246, 208, 0.75)");
+    gradient.addColorStop(0.58, "rgba(123, 44, 255, 0.58)");
+    gradient.addColorStop(1, "rgba(10, 13, 34, 0)");
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = "rgba(214, 77, 143, 0.7)";
+    ctx.lineWidth = 4;
+    for (var ring = 0; ring < 3; ring += 1) {
+      ctx.beginPath();
+      ctx.ellipse(0, 0, radius - ring * 12, 16 + ring * 5, ring * 0.8, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    ctx.restore();
   };
 
   Renderer.prototype.drawHillLayer = function (offset, baseY, color, scale) {
@@ -103,6 +148,17 @@
     ctx.lineTo(this.width, this.height);
     ctx.closePath();
     ctx.fill();
+
+    ctx.globalAlpha = 0.28;
+    ctx.strokeStyle = "#68f6d0";
+    ctx.lineWidth = 2;
+    for (var root = start + 80; root < this.width + 760; root += 210) {
+      ctx.beginPath();
+      ctx.moveTo(root, baseY + 22);
+      ctx.quadraticCurveTo(root + 42, baseY - 20 * scale, root + 84, baseY + 16);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
   };
 
   Renderer.prototype.drawCloud = function (x, y, scale) {
@@ -110,76 +166,114 @@
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(scale, scale);
-    ctx.fillStyle = "rgba(255, 255, 255, 0.92)";
+    ctx.fillStyle = "rgba(123, 44, 255, 0.28)";
     ctx.beginPath();
-    ctx.arc(0, 15, 28, 0, Math.PI * 2);
-    ctx.arc(30, 2, 34, 0, Math.PI * 2);
-    ctx.arc(66, 15, 28, 0, Math.PI * 2);
-    ctx.arc(30, 26, 32, 0, Math.PI * 2);
+    ctx.ellipse(2, 15, 36, 16, -0.24, 0, Math.PI * 2);
+    ctx.ellipse(36, 5, 42, 20, 0.2, 0, Math.PI * 2);
+    ctx.ellipse(78, 17, 34, 16, 0.12, 0, Math.PI * 2);
     ctx.fill();
+
+    ctx.strokeStyle = "rgba(104, 246, 208, 0.38)";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(-24, 20);
+    ctx.quadraticCurveTo(28, -12, 90, 20);
+    ctx.stroke();
     ctx.restore();
   };
 
   Renderer.prototype.drawLevelDecor = function (level) {
     var ctx = this.ctx;
     ctx.save();
-    ctx.globalAlpha = 0.2;
-    ctx.fillStyle = "#ffffff";
     for (var x = 120; x < level.width; x += 560) {
+      ctx.globalAlpha = 0.22;
+      ctx.fillStyle = "#0a0e1e";
       ctx.beginPath();
-      ctx.arc(x, level.height - 120, 36, 0, Math.PI * 2);
-      ctx.arc(x + 46, level.height - 130, 46, 0, Math.PI * 2);
-      ctx.arc(x + 98, level.height - 118, 34, 0, Math.PI * 2);
+      ctx.moveTo(x - 52, level.height - 92);
+      ctx.lineTo(x - 20, level.height - 208);
+      ctx.lineTo(x + 14, level.height - 92);
+      ctx.closePath();
       ctx.fill();
+
+      ctx.globalAlpha = 0.36;
+      ctx.fillStyle = "#f7c45b";
+      ctx.beginPath();
+      ctx.moveTo(x + 48, level.height - 80);
+      ctx.lineTo(x + 70, level.height - 154);
+      ctx.lineTo(x + 92, level.height - 80);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.globalAlpha = 0.5;
+      ctx.strokeStyle = "#68f6d0";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(x + 20, level.height - 74);
+      ctx.lineTo(x + 20, level.height - 136);
+      ctx.stroke();
     }
+    ctx.globalAlpha = 1;
     ctx.restore();
   };
 
   Renderer.prototype.drawPlatform = function (platform) {
     var ctx = this.ctx;
-    var grassHeight = Math.min(22, platform.h * 0.35);
+    var trimHeight = Math.min(20, platform.h * 0.28);
     this.roundRect(ctx, platform.x, platform.y, platform.w, platform.h, 8, Config.colors.dirt);
 
     ctx.fillStyle = Config.colors.dirtDark;
     for (var x = platform.x + 14; x < platform.x + platform.w; x += 34) {
-      ctx.fillRect(x, platform.y + grassHeight + 15, 14, 7);
-      ctx.fillRect(x + 10, platform.y + grassHeight + 46, 20, 8);
+      ctx.fillRect(x, platform.y + trimHeight + 15, 16, 6);
+      ctx.fillRect(x + 11, platform.y + trimHeight + 46, 22, 7);
     }
 
-    this.roundRect(ctx, platform.x, platform.y - 2, platform.w, grassHeight + 7, 8, Config.colors.grassTop);
+    this.roundRect(ctx, platform.x, platform.y - 2, platform.w, trimHeight + 7, 8, Config.colors.grassTop);
     ctx.fillStyle = Config.colors.grassDark;
-    ctx.fillRect(platform.x, platform.y + grassHeight, platform.w, 5);
+    ctx.fillRect(platform.x, platform.y + trimHeight, platform.w, 5);
 
-    ctx.fillStyle = "#7be06f";
-    for (var blade = platform.x + 10; blade < platform.x + platform.w - 8; blade += 18) {
+    ctx.globalAlpha = 0.82;
+    ctx.fillStyle = "#68f6d0";
+    for (var rune = platform.x + 18; rune < platform.x + platform.w - 8; rune += 58) {
       ctx.beginPath();
-      ctx.moveTo(blade, platform.y + 4);
-      ctx.lineTo(blade + 7, platform.y - 9 - Math.sin(blade) * 3);
-      ctx.lineTo(blade + 13, platform.y + 4);
+      ctx.moveTo(rune, platform.y + 6);
+      ctx.lineTo(rune + 8, platform.y - 6);
+      ctx.lineTo(rune + 16, platform.y + 6);
+      ctx.lineTo(rune + 8, platform.y + 15);
+      ctx.closePath();
       ctx.fill();
     }
+    ctx.globalAlpha = 1;
   };
 
   Renderer.prototype.drawCoin = function (coin, time) {
     var ctx = this.ctx;
     var bob = Math.sin(time * 4 + coin.index) * 5;
-    var squash = 0.35 + Math.abs(Math.cos(coin.animationTime)) * 0.65;
+    var squash = 0.55 + Math.abs(Math.cos(coin.animationTime)) * 0.45;
     var x = coin.x;
     var y = coin.y + bob;
 
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(squash, 1);
-    ctx.fillStyle = "#ffd84d";
-    ctx.strokeStyle = "#ef9c2f";
+    ctx.fillStyle = "#f7c45b";
+    ctx.strokeStyle = "#fff0a3";
     ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.ellipse(0, 0, 14, 18, 0, 0, Math.PI * 2);
+    ctx.moveTo(0, -21);
+    ctx.lineTo(15, 0);
+    ctx.lineTo(0, 21);
+    ctx.lineTo(-15, 0);
+    ctx.closePath();
     ctx.fill();
     ctx.stroke();
-    ctx.fillStyle = "rgba(255, 255, 255, 0.65)";
+
+    ctx.fillStyle = "rgba(104, 246, 208, 0.85)";
     ctx.beginPath();
-    ctx.ellipse(-4, -6, 4, 7, -0.35, 0, Math.PI * 2);
+    ctx.moveTo(0, -9);
+    ctx.lineTo(6, 0);
+    ctx.lineTo(0, 9);
+    ctx.lineTo(-6, 0);
+    ctx.closePath();
     ctx.fill();
     ctx.restore();
   };
@@ -188,20 +282,33 @@
     var ctx = this.ctx;
     var baseX = checkpoint.x;
     var baseY = checkpoint.y;
-    var flagColor = checkpoint.active ? "#80ed99" : "#8ec5ff";
-    var wave = Math.sin(time * 5 + checkpoint.x) * 4;
+    var glowColor = checkpoint.active ? "#f7c45b" : "#68f6d0";
+    var pulse = 8 + Math.sin(time * 5 + checkpoint.x) * 3;
 
-    ctx.fillStyle = "#6f8da8";
-    ctx.fillRect(baseX, baseY - checkpoint.h, 7, checkpoint.h);
-    ctx.fillStyle = "#365c7d";
-    ctx.fillRect(baseX - 7, baseY - 4, 21, 8);
+    ctx.fillStyle = "#15182b";
+    ctx.fillRect(baseX - 6, baseY - checkpoint.h, 12, checkpoint.h);
+    ctx.fillStyle = "#2c2944";
+    ctx.fillRect(baseX - 18, baseY - 8, 36, 12);
 
-    ctx.fillStyle = flagColor;
+    ctx.strokeStyle = glowColor;
+    ctx.lineWidth = 4;
     ctx.beginPath();
-    ctx.moveTo(baseX + 7, baseY - checkpoint.h + 6);
-    ctx.quadraticCurveTo(baseX + 39, baseY - checkpoint.h + wave, baseX + 62, baseY - checkpoint.h + 12);
-    ctx.lineTo(baseX + 50, baseY - checkpoint.h + 42);
-    ctx.quadraticCurveTo(baseX + 27, baseY - checkpoint.h + 34 - wave, baseX + 7, baseY - checkpoint.h + 39);
+    ctx.arc(baseX, baseY - checkpoint.h + 26, 18, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.globalAlpha = 0.55;
+    ctx.fillStyle = glowColor;
+    ctx.beginPath();
+    ctx.arc(baseX, baseY - checkpoint.h + 26, pulse, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    ctx.fillStyle = checkpoint.active ? "#fff0a3" : "#a078ff";
+    ctx.beginPath();
+    ctx.moveTo(baseX, baseY - checkpoint.h + 6);
+    ctx.lineTo(baseX + 12, baseY - checkpoint.h + 26);
+    ctx.lineTo(baseX, baseY - checkpoint.h + 48);
+    ctx.lineTo(baseX - 12, baseY - checkpoint.h + 26);
     ctx.closePath();
     ctx.fill();
   };
@@ -210,26 +317,44 @@
     var ctx = this.ctx;
     var x = flag.x;
     var y = flag.y;
-    var wave = Math.sin(time * 5) * 5;
+    var pulse = 1 + Math.sin(time * 4) * 0.08;
 
-    ctx.fillStyle = "#f7f0da";
-    ctx.fillRect(x, y - flag.h, 9, flag.h);
-    ctx.fillStyle = "#b9a87a";
-    ctx.fillRect(x - 9, y - 6, 27, 10);
+    ctx.fillStyle = "#16192c";
+    ctx.fillRect(x - 8, y - flag.h, 16, flag.h);
+    ctx.fillStyle = "#3b3350";
+    ctx.fillRect(x - 22, y - 8, 44, 12);
 
-    ctx.fillStyle = "#ff6f6f";
+    ctx.save();
+    ctx.translate(x + 8, y - flag.h + 40);
+    ctx.scale(pulse, pulse);
+    ctx.strokeStyle = "rgba(104, 246, 208, 0.72)";
+    ctx.lineWidth = 4;
     ctx.beginPath();
-    ctx.moveTo(x + 9, y - flag.h + 5);
-    ctx.quadraticCurveTo(x + 46, y - flag.h - 4 + wave, x + 84, y - flag.h + 10);
-    ctx.lineTo(x + 72, y - flag.h + 52);
-    ctx.quadraticCurveTo(x + 40, y - flag.h + 36 - wave, x + 9, y - flag.h + 43);
+    ctx.arc(0, 0, 42, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.rotate(time * 0.8);
+    ctx.strokeStyle = "rgba(123, 44, 255, 0.72)";
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 58, 18, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.fillStyle = "#f7c45b";
+    ctx.strokeStyle = "#fff0a3";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(x + 8, y - flag.h - 18);
+    ctx.lineTo(x + 38, y - flag.h + 38);
+    ctx.lineTo(x + 8, y - flag.h + 102);
+    ctx.lineTo(x - 22, y - flag.h + 38);
     ctx.closePath();
     ctx.fill();
+    ctx.stroke();
 
-    this.drawStar(x + 43, y - flag.h + 22, 10, "#fff2a7");
+    this.drawStar(x + 8, y - flag.h + 38, 10, "#ffffff");
   };
 
-  Renderer.prototype.drawEnemy = function (enemy, time) {
+  Renderer.prototype.drawEnemy = function (enemy) {
     var ctx = this.ctx;
     var bounce = Math.sin(enemy.animationTime * 8) * 2;
     var facing = enemy.vx >= 0 ? 1 : -1;
@@ -240,37 +365,54 @@
     ctx.translate(x, y);
     ctx.scale(facing, 1);
 
-    ctx.fillStyle = "rgba(54, 74, 91, 0.18)";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
     ctx.beginPath();
-    ctx.ellipse(0, 22, 23, 7, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 23, 26, 8, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = "#9b6de3";
+    ctx.strokeStyle = "#7b2cff";
+    ctx.lineWidth = 5;
+    ctx.lineCap = "round";
     ctx.beginPath();
-    ctx.ellipse(0, 4, 23, 18, 0, 0, Math.PI * 2);
+    ctx.moveTo(-16, 7);
+    ctx.quadraticCurveTo(-36, -8, -28, -25);
+    ctx.moveTo(16, 7);
+    ctx.quadraticCurveTo(36, -8, 28, -25);
+    ctx.stroke();
+
+    ctx.fillStyle = "#191128";
+    ctx.beginPath();
+    ctx.ellipse(0, 4, 24, 20, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = "#7d54c2";
+    ctx.fillStyle = "#3b1c66";
     ctx.beginPath();
-    ctx.arc(-8, -6, 7, 0, Math.PI * 2);
-    ctx.arc(8, -7, 6, 0, Math.PI * 2);
+    ctx.arc(-10, -8, 8, 0, Math.PI * 2);
+    ctx.arc(10, -8, 8, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = "#fff";
+    ctx.fillStyle = "#68f6d0";
     ctx.beginPath();
-    ctx.arc(7, 0, 6, 0, Math.PI * 2);
-    ctx.arc(20, 0, 6, 0, Math.PI * 2);
+    ctx.arc(-7, 0, 5, 0, Math.PI * 2);
+    ctx.arc(9, 0, 5, 0, Math.PI * 2);
+    ctx.arc(1, 9, 4, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = "#27384f";
+    ctx.fillStyle = "#0b1022";
     ctx.beginPath();
-    ctx.arc(9, 1, 2.5, 0, Math.PI * 2);
-    ctx.arc(22, 1, 2.5, 0, Math.PI * 2);
+    ctx.arc(-6, 1, 2, 0, Math.PI * 2);
+    ctx.arc(10, 1, 2, 0, Math.PI * 2);
+    ctx.arc(2, 10, 1.6, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = "#6a47aa";
-    ctx.fillRect(-17, 15, 8, 8);
-    ctx.fillRect(9, 15, 8, 8);
+    ctx.strokeStyle = "#d64d8f";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(-15, 16);
+    ctx.lineTo(-20, 28);
+    ctx.moveTo(14, 16);
+    ctx.lineTo(20, 28);
+    ctx.stroke();
 
     ctx.restore();
   };
@@ -295,12 +437,12 @@
     ctx.scale(player.facing, 1);
     ctx.rotate(lean);
 
-    ctx.fillStyle = "rgba(54, 74, 91, 0.18)";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.32)";
     ctx.beginPath();
     ctx.ellipse(0, 31, 22, 7, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.strokeStyle = "#2e8d62";
+    ctx.strokeStyle = "#101520";
     ctx.lineWidth = 6;
     ctx.lineCap = "round";
     ctx.beginPath();
@@ -310,9 +452,20 @@
     ctx.lineTo(13 + legSwing * 0.4, 26);
     ctx.stroke();
 
-    this.roundRect(ctx, -18, -14, 36, 34, 12, "#f78ec4");
+    ctx.fillStyle = "rgba(123, 44, 255, 0.5)";
+    ctx.beginPath();
+    ctx.moveTo(-17, -8);
+    ctx.quadraticCurveTo(-44, -22, -35, 8);
+    ctx.quadraticCurveTo(-22, 4, -17, 14);
+    ctx.moveTo(17, -8);
+    ctx.quadraticCurveTo(44, -22, 35, 8);
+    ctx.quadraticCurveTo(22, 4, 17, 14);
+    ctx.fill();
 
-    ctx.strokeStyle = "#c95a96";
+    this.roundRect(ctx, -18, -14, 36, 34, 12, "#1c2032");
+    this.roundRect(ctx, -11, -10, 22, 25, 8, "#283148");
+
+    ctx.strokeStyle = "#68f6d0";
     ctx.lineWidth = 5;
     ctx.beginPath();
     ctx.moveTo(-15, -2);
@@ -321,33 +474,49 @@
     ctx.lineTo(23, 9 - armSwing);
     ctx.stroke();
 
-    ctx.fillStyle = "#ffcf9f";
+    ctx.strokeStyle = "#c8ff6a";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(-29, 11 + armSwing, 9, -0.2, Math.PI * 1.4);
+    ctx.arc(29, 11 - armSwing, 9, Math.PI * -0.4, Math.PI + 0.2);
+    ctx.stroke();
+
+    ctx.fillStyle = "#9c7a5b";
     ctx.beginPath();
     ctx.arc(0, -24, 19, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = "#6bcf6f";
+    ctx.strokeStyle = "#1a1022";
+    ctx.lineWidth = 6;
     ctx.beginPath();
-    ctx.ellipse(-5, -43, 12, 7, -0.35, 0, Math.PI * 2);
-    ctx.ellipse(8, -42, 12, 7, 0.35, 0, Math.PI * 2);
+    ctx.moveTo(-12, -39);
+    ctx.quadraticCurveTo(-25, -57, -39, -45);
+    ctx.moveTo(12, -39);
+    ctx.quadraticCurveTo(25, -57, 39, -45);
+    ctx.stroke();
+
+    ctx.fillStyle = "#1a1022";
+    ctx.beginPath();
+    ctx.ellipse(-5, -43, 12, 6, -0.35, 0, Math.PI * 2);
+    ctx.ellipse(8, -42, 12, 6, 0.35, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = "#111629";
+    ctx.fillRect(-16, -30, 34, 8);
+
+    ctx.fillStyle = "#68f6d0";
     ctx.beginPath();
-    ctx.arc(5, -27, 5, 0, Math.PI * 2);
-    ctx.arc(17, -27, 5, 0, Math.PI * 2);
+    ctx.arc(-5, -26, 2.4, 0, Math.PI * 2);
+    ctx.arc(8, -26, 2.4, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = "#263a52";
-    ctx.beginPath();
-    ctx.arc(7, -26, 2, 0, Math.PI * 2);
-    ctx.arc(19, -26, 2, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.strokeStyle = "#9c4f4f";
+    ctx.strokeStyle = "#c8ff6a";
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(12, -18, 6, 0.15, Math.PI - 0.15);
+    ctx.moveTo(-8, 2);
+    ctx.lineTo(-2, 12);
+    ctx.moveTo(8, 2);
+    ctx.lineTo(2, 12);
     ctx.stroke();
 
     ctx.restore();
@@ -358,8 +527,7 @@
     var ctx = this.ctx;
     for (var i = 0; i < particleSystem.particles.length; i += 1) {
       var particle = particleSystem.particles[i];
-      var alpha = Helpers.clamp(particle.life / particle.maxLife, 0, 1);
-      ctx.globalAlpha = alpha;
+      ctx.globalAlpha = Helpers.clamp(particle.life / particle.maxLife, 0, 1);
       ctx.fillStyle = particle.color;
       ctx.beginPath();
       ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);

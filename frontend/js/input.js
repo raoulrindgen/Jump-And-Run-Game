@@ -12,6 +12,7 @@
     };
     this.jumpPressed = false;
     this.actionPressed = false;
+    this.pausePressed = false;
 
     this.bindKeyboard();
     this.bindTouch(touchRoot);
@@ -23,7 +24,7 @@
     window.addEventListener("keydown", function (event) {
       var key = event.key.toLowerCase();
 
-      if (key === "arrowleft" || key === "arrowright" || key === " " || key === "spacebar") {
+      if (key === "arrowleft" || key === "arrowright" || key === " " || key === "spacebar" || key === "escape") {
         event.preventDefault();
       }
 
@@ -35,6 +36,10 @@
 
         if (key === "enter") {
           self.actionPressed = true;
+        }
+
+        if (key === "escape" || key === "p") {
+          self.pausePressed = true;
         }
       }
 
@@ -112,9 +117,16 @@
     return pressed;
   };
 
+  InputManager.prototype.consumePause = function () {
+    var pressed = this.pausePressed;
+    this.pausePressed = false;
+    return pressed;
+  };
+
   InputManager.prototype.clearTransient = function () {
     this.jumpPressed = false;
     this.actionPressed = false;
+    this.pausePressed = false;
   };
 
   SunnyGame.InputManager = InputManager;

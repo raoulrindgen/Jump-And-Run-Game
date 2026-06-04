@@ -24,14 +24,14 @@
         radius: 3 + Math.random() * 3,
         life: 0.35 + Math.random() * 0.18,
         maxLife: 0.45,
-        color: Math.random() > 0.5 ? "#ffffff" : "#d5f7ff",
+        color: Math.random() > 0.5 ? "#68f6d0" : "#c8ff6a",
         gravity: 440
       };
     });
   };
 
   ParticleSystem.prototype.emitCoin = function (x, y) {
-    var colors = ["#ffe071", "#fff4a3", "#ff9f45", "#ffffff"];
+    var colors = ["#f7c45b", "#fff0a3", "#68f6d0", "#ffffff"];
     this.emit(x, y, 18, function (originX, originY) {
       var angle = Math.random() * Math.PI * 2;
       var speed = 70 + Math.random() * 210;
@@ -50,7 +50,7 @@
   };
 
   ParticleSystem.prototype.emitHit = function (x, y) {
-    var colors = ["#ff6f6f", "#ffd166", "#ffffff"];
+    var colors = ["#d64d8f", "#7b2cff", "#68f6d0", "#ffffff"];
     this.emit(x, y, 20, function (originX, originY) {
       var angle = Math.random() * Math.PI * 2;
       var speed = 100 + Math.random() * 260;
@@ -69,7 +69,7 @@
   };
 
   ParticleSystem.prototype.emitCheckpoint = function (x, y) {
-    var colors = ["#80ed99", "#ffd166", "#8ec5ff", "#ffffff"];
+    var colors = ["#68f6d0", "#f7c45b", "#a078ff", "#ffffff"];
     this.emit(x, y, 24, function (originX, originY) {
       var angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.6;
       var speed = 100 + Math.random() * 240;

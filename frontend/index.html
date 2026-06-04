@@ -3,19 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Sunny Sprout Sprint</title>
+  <title>Midnight Rift Run</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <main class="game-shell" aria-label="Sunny Sprout Sprint platformer game">
+  <main class="game-shell" aria-label="Midnight Rift Run platformer game">
     <canvas id="gameCanvas" width="1280" height="720" aria-label="Game canvas"></canvas>
 
     <div class="hud" aria-label="Game status">
       <div class="hud-group">
         <span>Score <strong id="scoreValue">0</strong></span>
-        <span>Coins <strong id="coinValue">0</strong></span>
+        <span>Shards <strong id="coinValue">0</strong></span>
       </div>
       <div class="hud-group">
+        <button id="pauseButton" class="hud-button pause-toggle" type="button" aria-label="Pause game" aria-pressed="false" disabled>
+          <span class="pause-icon" aria-hidden="true"></span>
+        </button>
         <span>Level <strong id="levelValue">1</strong></span>
         <span>Lives <strong id="livesValue">3</strong></span>
       </div>
@@ -23,8 +26,8 @@
 
     <section id="messagePanel" class="message-panel" aria-live="polite">
       <div class="message-card">
-        <h1 id="messageTitle">Sunny Sprout Sprint</h1>
-        <p id="messageText">Collect coins, tag checkpoints, and reach the flag.</p>
+        <h1 id="messageTitle">Midnight Rift Run</h1>
+        <p id="messageText">Cut through the Voidstorm, gather sun shards, and seal the rift.</p>
         <button id="primaryAction" type="button">Start Game</button>
       </div>
     </section>

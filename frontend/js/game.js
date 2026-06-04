@@ -21,6 +21,7 @@
     this.messageTitle = document.getElementById("messageTitle");
     this.messageText = document.getElementById("messageText");
     this.primaryAction = document.getElementById("primaryAction");
+    this.pauseButton = document.getElementById("pauseButton");
     this.scoreValue = document.getElementById("scoreValue");
     this.coinValue = document.getElementById("coinValue");
     this.levelValue = document.getElementById("levelValue");
@@ -43,7 +44,7 @@
 
     this.bindEvents();
     this.loadLevel(0, 3);
-    this.showMessage("Sunny Sprout Sprint", "Collect coins, tag checkpoints, and reach the flag.", "Start Game", "start");
+    this.showMessage("Midnight Rift Run", "Cut through the Voidstorm, gather sun shards, and seal the rift.", "Start Game", "start");
     this.loop = this.loop.bind(this);
     requestAnimationFrame(this.loop);
   }
@@ -58,6 +59,10 @@
 
     this.primaryAction.addEventListener("click", function () {
       self.handlePanelAction();
+    });
+
+    this.pauseButton.addEventListener("click", function () {
+      self.togglePause();
     });
 
     this.canvas.addEventListener("pointerdown", function () {
@@ -94,6 +99,7 @@
     this.loadLevel(0, 3);
     this.state = "playing";
     this.hideMessage();
+    this.updatePauseButton();
     this.audio.ensureContext();
   };
 
@@ -106,8 +112,33 @@
       this.loadLevel(this.levelIndex + 1, this.player.lives);
       this.state = "playing";
       this.hideMessage();
+      this.updatePauseButton();
+    } else if (this.nextAction === "resume") {
+      this.resumeGame();
     }
 
+    this.input.clearTransient();
+  };
+
+  Game.prototype.togglePause = function () {
+    if (this.state === "playing") {
+      this.pauseGame();
+    } else if (this.state === "paused") {
+      this.resumeGame();
+    }
+  };
+
+  Game.prototype.pauseGame = function () {
+    this.state = "paused";
+    this.showMessage("Paused", "Take a breather, then jump back in.", "Resume", "resume");
+    this.updatePauseButton();
+    this.input.clearTransient();
+  };
+
+  Game.prototype.resumeGame = function () {
+    this.state = "playing";
+    this.hideMessage();
+    this.updatePauseButton();
     this.input.clearTransient();
   };
 
@@ -117,10 +148,13 @@
     this.primaryAction.textContent = buttonText;
     this.nextAction = action;
     this.messagePanel.hidden = false;
+    this.input.clearTransient();
+    this.updatePauseButton();
   };
 
   Game.prototype.hideMessage = function () {
     this.messagePanel.hidden = true;
+    this.updatePauseButton();
   };
 
   Game.prototype.loop = function (timestamp) {
@@ -130,15 +164,22 @@
 
     var dt = Math.min(0.033, (timestamp - this.lastFrameTime) / 1000);
     this.lastFrameTime = timestamp;
-    this.time += dt;
+    var pausePressed = this.input.consumePause();
+    if (pausePressed) {
+      this.togglePause();
+    }
 
-    if (this.state !== "playing" && this.input.consumeAction()) {
+    if (!pausePressed && this.state !== "playing" && this.input.consumeAction()) {
       this.handlePanelAction();
+    }
+
+    if (this.state !== "paused") {
+      this.time += dt;
     }
 
     if (this.state === "playing") {
       this.update(dt);
-    } else {
+    } else if (this.state !== "paused") {
       this.particles.update(dt);
       this.updateDecorativeEntities(dt);
     }
@@ -225,10 +266,12 @@
 
     if (this.levelIndex >= SunnyGame.Levels.length - 1) {
       this.state = "won";
-      this.showMessage("You Win!", "Final score: " + this.score + " points with " + this.collectedCoins + " coins collected.", "Play Again", "restart");
+      this.showMessage("The Rift Is Sealed", "Final score: " + this.score + " points with " + this.collectedCoins + " sun shards claimed.", "Play Again", "restart");
+      this.updatePauseButton();
     } else {
       this.state = "levelComplete";
-      this.showMessage("Level Complete", "Next up: " + SunnyGame.Levels[this.levelIndex + 1].name + ".", "Next Level", "next");
+      this.showMessage("Rift Cleared", "Next incursion: " + SunnyGame.Levels[this.levelIndex + 1].name + ".", "Next Level", "next");
+      this.updatePauseButton();
     }
   };
 
@@ -248,8 +291,9 @@
     if (this.player.lives <= 0) {
       this.state = "gameOver";
       this.audio.gameOver();
-      this.showMessage("Game Over", "Score: " + this.score + ". Try again from the first meadow.", "Restart", "restart");
+      this.showMessage("The Void Prevails", "Score: " + this.score + ". Rally again at the first breach.", "Restart", "restart");
       this.updateHud();
+      this.updatePauseButton();
       return;
     }
 
@@ -285,6 +329,15 @@
     this.coinValue.textContent = this.collectedCoins;
     this.levelValue.textContent = this.levelIndex + 1;
     this.livesValue.textContent = this.player ? this.player.lives : 3;
+  };
+
+  Game.prototype.updatePauseButton = function () {
+    var canTogglePause = this.state === "playing" || this.state === "paused";
+
+    this.pauseButton.disabled = !canTogglePause;
+    this.pauseButton.setAttribute("aria-pressed", this.state === "paused" ? "true" : "false");
+    this.pauseButton.setAttribute("aria-label", this.state === "paused" ? "Resume game" : "Pause game");
+    this.pauseButton.classList.toggle("is-paused", this.state === "paused");
   };
 
   window.addEventListener("load", function () {

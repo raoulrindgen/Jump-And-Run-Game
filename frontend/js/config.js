@@ -28,12 +28,12 @@
       verticalOffset: 70
     },
     colors: {
-      skyTop: "#73d8ff",
-      skyBottom: "#d7f8ff",
-      grassTop: "#60cc64",
-      grassDark: "#2f9d56",
-      dirt: "#b86f3d",
-      dirtDark: "#8f4e2f"
+      skyTop: "#080d22",
+      skyBottom: "#251037",
+      grassTop: "#f1b84f",
+      grassDark: "#39d2ba",
+      dirt: "#25233b",
+      dirtDark: "#111629"
     }
   };
 
