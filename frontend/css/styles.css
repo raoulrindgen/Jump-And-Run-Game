@@ -70,7 +70,7 @@ button {
   column-gap: 10px;
 }
 
-.hud span {
+.hud-group > span {
   min-width: 88px;
   padding: 8px 10px;
   border: 2px solid var(--panel-border);
@@ -84,7 +84,7 @@ button {
   white-space: nowrap;
 }
 
-.hud strong {
+.hud-group > span strong {
   color: #68f6d0;
 }
 
@@ -106,6 +106,7 @@ button {
 }
 
 .pause-toggle {
+  position: relative;
   margin-right: 24px;
 }
 
@@ -114,39 +115,60 @@ button {
   opacity: 0.5;
 }
 
-.hud-button:not(:disabled):active,
-.hud-button.is-paused {
+.hud-button:not(:disabled):active {
   transform: translateY(2px);
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.28);
 }
 
 .pause-icon {
-  display: inline-flex;
-  justify-content: center;
-  gap: 5px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  flex: 0 0 18px;
+  width: 18px;
+  min-width: 18px;
+  max-width: 18px;
+  height: 18px;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.pause-icon::before {
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  width: 4px;
+  height: 14px;
+  border-radius: 3px;
+  background: currentColor;
+  box-shadow: 7px 0 0 currentColor;
+  content: "";
+}
+
+.pause-icon::after {
+  content: none;
+}
+
+.pause-toggle.is-paused .pause-icon {
   width: 18px;
   height: 18px;
 }
 
-.pause-icon::before,
-.pause-icon::after {
-  display: block;
-  width: 5px;
-  height: 18px;
-  border-radius: 3px;
-  background: currentColor;
-  content: "";
-}
-
-.pause-toggle.is-paused .pause-icon {
+.pause-toggle.is-paused .pause-icon::before {
+  top: 2px;
+  bottom: auto;
+  left: 5px;
   width: 0;
   height: 0;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  border-left: 16px solid currentColor;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 11px solid currentColor;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
-.pause-toggle.is-paused .pause-icon::before,
 .pause-toggle.is-paused .pause-icon::after {
   display: none;
 }
@@ -259,7 +281,7 @@ button {
     align-items: flex-start;
   }
 
-  .hud span {
+  .hud-group > span {
     min-width: 70px;
     padding: 7px 8px;
   }
@@ -274,7 +296,7 @@ button {
     gap: 8px;
   }
 
-  .hud span {
+  .hud-group > span {
     font-size: 12px;
   }
 
