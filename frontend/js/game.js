@@ -37,7 +37,7 @@
     this.finishFlag = null;
     this.score = 0;
     this.collectedCoins = 0;
-    this.camera = { x: 0, y: 0 };
+    this.camera = { x: 0, y: 0, lookAheadX: 0 };
     this.time = 0;
     this.lastFrameTime = 0;
     this.nextAction = "start";
@@ -89,6 +89,7 @@
     this.particles = new SunnyGame.ParticleSystem();
     this.camera.x = 0;
     this.camera.y = 0;
+    this.camera.lookAheadX = 0;
     this.updateHud();
     this.updateCamera(1);
   };
@@ -310,11 +311,25 @@
       return;
     }
 
-    var lookAhead = this.player.facing * Config.camera.lookAhead;
-    var targetX = this.player.x + this.player.w / 2 - this.renderer.width / 2 + lookAhead;
-    var targetY = this.player.y + this.player.h / 2 - this.renderer.height / 2 - Config.camera.verticalOffset;
+    var playerCenterX = this.player.x + this.player.w / 2;
+    var playerCenterY = this.player.y + this.player.h / 2;
+    var deadZoneLeft = this.renderer.width * Config.camera.deadZoneLeft;
+    var deadZoneRight = this.renderer.width * Config.camera.deadZoneRight;
+    var playerScreenX = playerCenterX - this.camera.x;
+    var targetLookAhead = this.player.facing * Config.camera.lookAhead;
+    var targetX = this.camera.x;
+    var targetY = playerCenterY - this.renderer.height / 2 - Config.camera.verticalOffset;
     var maxX = Math.max(0, this.level.width - this.renderer.width);
     var maxY = Math.max(0, this.level.height - this.renderer.height);
+    var lookAheadBlend = dt >= 1 ? 1 : 1 - Math.exp(-Config.camera.lookAheadSmoothing * dt);
+
+    this.camera.lookAheadX += (targetLookAhead - this.camera.lookAheadX) * lookAheadBlend;
+
+    if (playerScreenX < deadZoneLeft) {
+      targetX = playerCenterX - deadZoneLeft + this.camera.lookAheadX;
+    } else if (playerScreenX > deadZoneRight) {
+      targetX = playerCenterX - deadZoneRight + this.camera.lookAheadX;
+    }
 
     targetX = Helpers.clamp(targetX, 0, maxX);
     targetY = Helpers.clamp(targetY, 0, maxY);

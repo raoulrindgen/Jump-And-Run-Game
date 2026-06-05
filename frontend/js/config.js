@@ -17,14 +17,19 @@
       airFriction: 460,
       maxSpeed: 330,
       jumpSpeed: 790,
+      doubleJumpSpeed: 760,
+      maxJumps: 2,
       coyoteTime: 0.11,
       jumpBuffer: 0.14,
       respawnInvincible: 1.4,
       hurtKnockback: 260
     },
     camera: {
-      lookAhead: 120,
-      smoothing: 7,
+      deadZoneLeft: 0.35,
+      deadZoneRight: 0.6,
+      lookAhead: 48,
+      lookAheadSmoothing: 3.5,
+      smoothing: 6,
       verticalOffset: 70
     },
     colors: {

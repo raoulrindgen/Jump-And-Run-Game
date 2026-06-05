@@ -14,9 +14,10 @@
     this.vx = 0;
     this.vy = 0;
     this.facing = 1;
-    this.onGround = false;
+    this.onGround = true;
     this.coyoteTimer = 0;
     this.jumpBufferTimer = 0;
+    this.jumpsUsed = 0;
     this.invincibleTimer = 0;
     this.lives = lives || 3;
     this.spawn = { x: startX, y: startY - this.h };
@@ -38,6 +39,10 @@
     this.y = this.spawn.y;
     this.vx = 0;
     this.vy = 0;
+    this.onGround = true;
+    this.coyoteTimer = 0;
+    this.jumpBufferTimer = 0;
+    this.jumpsUsed = 0;
     this.invincibleTimer = Config.player.respawnInvincible;
   };
 
@@ -64,6 +69,12 @@
 
     this.coyoteTimer = this.onGround ? Config.player.coyoteTime : Math.max(0, this.coyoteTimer - dt);
 
+    if (this.onGround) {
+      this.jumpsUsed = 0;
+    } else if (this.coyoteTimer <= 0 && this.jumpsUsed === 0) {
+      this.jumpsUsed = 1;
+    }
+
     if (desired !== 0) {
       this.vx += desired * Config.player.moveAcceleration * dt;
       this.facing = desired;
@@ -74,13 +85,19 @@
 
     this.vx = Helpers.clamp(this.vx, -Config.player.maxSpeed, Config.player.maxSpeed);
 
-    if (this.jumpBufferTimer > 0 && this.coyoteTimer > 0) {
-      this.vy = -Config.player.jumpSpeed;
-      this.onGround = false;
-      this.coyoteTimer = 0;
-      this.jumpBufferTimer = 0;
-      particles.emitJump(this.x + this.w / 2, this.y + this.h, this.facing);
-      audio.jump();
+    if (this.jumpBufferTimer > 0) {
+      var canGroundJump = this.coyoteTimer > 0 && this.jumpsUsed === 0;
+      var canAirJump = !canGroundJump && this.jumpsUsed < Config.player.maxJumps;
+
+      if (canGroundJump || canAirJump) {
+        this.vy = canGroundJump ? -Config.player.jumpSpeed : -Config.player.doubleJumpSpeed;
+        this.onGround = false;
+        this.coyoteTimer = 0;
+        this.jumpsUsed += 1;
+        this.jumpBufferTimer = 0;
+        particles.emitJump(this.x + this.w / 2, this.y + this.h, this.facing);
+        audio.jump();
+      }
     }
 
     if (!input.jumpHeld() && this.vy < -260) {
@@ -96,6 +113,10 @@
     this.y += this.vy * dt;
     this.onGround = false;
     this.resolveVertical(level.platforms);
+
+    if (this.onGround) {
+      this.jumpsUsed = 0;
+    }
 
     if (this.onGround && !wasOnGround && landingSpeed > 520) {
       particles.emitJump(this.x + this.w / 2, this.y + this.h, this.facing);
@@ -157,6 +178,10 @@
 
     this.lives -= 1;
     this.invincibleTimer = Config.player.respawnInvincible;
+    this.onGround = false;
+    this.coyoteTimer = 0;
+    this.jumpBufferTimer = 0;
+    this.jumpsUsed = 1;
     this.vx = fromX < this.x ? Config.player.hurtKnockback : -Config.player.hurtKnockback;
     this.vy = -430;
     particles.emitHit(this.x + this.w / 2, this.y + this.h / 2);

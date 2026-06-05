@@ -9,7 +9,7 @@ Open `frontend/index.html` in a browser. No backend, package install, or build s
 ## Controls
 
 - Move: `A` / `D` or left / right arrow keys
-- Jump: `Space`
+- Jump / double jump: `Space` (press again while airborne)
 - Pause: `P`, `Escape`, or the pause button
 - Mobile: on-screen buttons
 
