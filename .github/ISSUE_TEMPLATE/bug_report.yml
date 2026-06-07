@@ -1,0 +1,42 @@
+name: Bug report
+description: Report a reproducible gameplay or UI problem.
+title: "Bug: "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened?
+      placeholder: The player can get stuck after...
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: List the shortest path to trigger the problem.
+      placeholder: |
+        1. Open the game
+        2. Start level 2
+        3. Jump onto...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened instead?
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser / device
+      placeholder: Chrome 126 on Windows, Safari on iPhone, etc.
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional context
+      description: Screenshots, recordings, or console errors help.

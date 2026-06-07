@@ -61,6 +61,7 @@
       desired += 1;
     }
 
+    // Buffer early jump presses and keep late presses forgiving with coyote time.
     if (input.consumeJump()) {
       this.jumpBufferTimer = Config.player.jumpBuffer;
     } else {
@@ -100,6 +101,7 @@
       }
     }
 
+    // Releasing jump early trims upward velocity for variable jump height.
     if (!input.jumpHeld() && this.vy < -260) {
       this.vy = -260;
     }

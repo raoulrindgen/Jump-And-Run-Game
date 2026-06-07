@@ -16,6 +16,7 @@
   }
 
   Renderer.prototype.resize = function () {
+    // Cap DPR to keep the scene sharp without excessive canvas fill-rate cost.
     this.dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
     this.width = Math.max(320, this.canvas.clientWidth || window.innerWidth);
     this.height = Math.max(240, this.canvas.clientHeight || window.innerHeight);

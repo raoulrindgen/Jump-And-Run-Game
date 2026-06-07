@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security note
+    url: https://github.com/raoulrindgen/Jump-And-Run-Game/security/policy
+    about: Please do not post secrets or private data in public issues.

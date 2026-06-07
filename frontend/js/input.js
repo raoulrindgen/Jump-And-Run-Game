@@ -105,6 +105,7 @@
     return !!(this.keys[" "] || this.keys.spacebar || this.touch.jump);
   };
 
+  // One-shot actions are consumed so holding a key does not retrigger menus or jumps.
   InputManager.prototype.consumeJump = function () {
     var pressed = this.jumpPressed;
     this.jumpPressed = false;

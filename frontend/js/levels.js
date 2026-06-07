@@ -3,6 +3,7 @@
 
   window.SunnyGame = window.SunnyGame || {};
 
+  // Levels stay as data so layout tuning does not touch gameplay or rendering logic.
   SunnyGame.Levels = [
     {
       name: "Eversong Siege",

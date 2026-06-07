@@ -321,6 +321,7 @@
     var targetY = playerCenterY - this.renderer.height / 2 - Config.camera.verticalOffset;
     var maxX = Math.max(0, this.level.width - this.renderer.width);
     var maxY = Math.max(0, this.level.height - this.renderer.height);
+    // Exponential smoothing keeps camera behavior stable across frame rates.
     var lookAheadBlend = dt >= 1 ? 1 : 1 - Math.exp(-Config.camera.lookAheadSmoothing * dt);
 
     this.camera.lookAheadX += (targetLookAhead - this.camera.lookAheadX) * lookAheadBlend;
